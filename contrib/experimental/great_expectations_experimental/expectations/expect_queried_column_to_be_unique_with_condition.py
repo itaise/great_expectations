@@ -1,4 +1,5 @@
 from typing import Union
+
 from great_expectations.core.expectation_configuration import ExpectationConfiguration
 from great_expectations.execution_engine import ExecutionEngine
 from great_expectations.expectations.expectation import (
@@ -8,9 +9,10 @@ from great_expectations.expectations.expectation import (
 
 
 class ExpectQueriedColumnToBeUniqueWithCondition(QueryExpectation):
-    """ Expect column values to be distinct, with an filter.
-        column A - the column to check uniqueness
-        column B - the filter - if boolean column, provide just the column name (evaluated to True) """
+    """Expect column values to be unique, with an filter.
+    column A - the column to check uniqueness
+    column B - the filter - if boolean column, provide just the column name (evaluated to True)"""
+
     metric_dependencies = ("query.column_pair",)
 
     query = """
@@ -48,14 +50,13 @@ class ExpectQueriedColumnToBeUniqueWithCondition(QueryExpectation):
         query_result = metrics.get("query.column_pair")
         query_result = dict(query_result)
         if not query_result:
-            return {
-                "success": True}
+            return {"success": True}
 
         else:
             return {
-            "success": False,
-            "result": {"observed_value": query_result},
-        }
+                "success": False,
+                "result": {"observed_value": query_result},
+            }
 
     examples = [
         {
@@ -65,7 +66,7 @@ class ExpectQueriedColumnToBeUniqueWithCondition(QueryExpectation):
                     "data": {
                         "uuid": [1, 2, 2, 3, 4, 4],
                         "is_open": [True, False, True, True, True, True],
-                        "is_open_2": [False, True, False, False, False, True]
+                        "is_open_2": [False, True, False, False, False, True],
                     },
                 },
             ],
@@ -74,10 +75,7 @@ class ExpectQueriedColumnToBeUniqueWithCondition(QueryExpectation):
                     "title": "basic_negative_test",
                     "exact_match_out": False,
                     "include_in_gallery": True,
-                    "in": {
-                        "column_A": "uuid",
-                        "column_B": "is_open"
-                    },
+                    "in": {"column_A": "uuid", "column_B": "is_open"},
                     "out": {"success": False},
                     "only_for": ["sqlite"],
                 },
@@ -85,16 +83,14 @@ class ExpectQueriedColumnToBeUniqueWithCondition(QueryExpectation):
                     "title": "basic_positive_test",
                     "exact_match_out": False,
                     "include_in_gallery": True,
-                    "in": {
-                        "column_A": "uuid",
-                        "column_B": "is_open_2"
-                    },
+                    "in": {"column_A": "uuid", "column_B": "is_open_2"},
                     "out": {"success": True},
                     "only_for": ["sqlite"],
-                }
-            ]}]
+                },
+            ],
+        }
+    ]
 
-    # This dictionary contains metadata for display in the public gallery
     library_metadata = {
         "tags": ["query-based"],
         "contributors": ["@itaise"],

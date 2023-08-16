@@ -13,9 +13,9 @@ class ExpectQueriedColumnToHaveNDistinctValuesWithCondition(QueryExpectation):
 
     Args:
         template_dict: dict with the following keys: \
-            column_to_check (column to check uniqueness on. can be multiple column names separated by comma), \
-            condition (the filter for boolean column, you can provide just the column name, evaluated to True), \
-            num_of_distinct_values (number of distinct values the column is supposed ot have)
+            column_to_check (str: column to check uniqueness on. can be multiple column names separated by comma), \
+            condition (str: the filter for boolean column, you can provide just the column name, evaluated to True), \
+            num_of_distinct_values (str: number of distinct values the column is supposed ot have)
     """
 
     metric_dependencies = ("query.template_values",)
@@ -72,9 +72,9 @@ class ExpectQueriedColumnToHaveNDistinctValuesWithCondition(QueryExpectation):
         template_dict = self.validate_template_dict(configuration)
         query_result = metrics.get("query.template_values")
         actual_num_of_distinct_values = len(query_result)
-        expected_num_of_distinct_values = template_dict["num_of_distinct_values"]
+        expected_num_of_distinct_values: str = template_dict["num_of_distinct_values"]
 
-        if actual_num_of_distinct_values == expected_num_of_distinct_values:
+        if actual_num_of_distinct_values == int(expected_num_of_distinct_values):
             return {
                 "result": {"observed_value": [list(row) for row in query_result]},
                 "success": True,
@@ -124,7 +124,7 @@ class ExpectQueriedColumnToHaveNDistinctValuesWithCondition(QueryExpectation):
                         "template_dict": {
                             "column_to_check": "uuid",
                             "condition": "is_open_2",
-                            "num_of_distinct_values": 2,
+                            "num_of_distinct_values": '2',
                         }
                     },
                     "out": {"success": True},
@@ -138,7 +138,7 @@ class ExpectQueriedColumnToHaveNDistinctValuesWithCondition(QueryExpectation):
                         "template_dict": {
                             "column_to_check": "uuid",
                             "condition": "is_open",
-                            "num_of_distinct_values": 1,
+                            "num_of_distinct_values": '1',
                         }
                     },
                     "out": {"success": False},
